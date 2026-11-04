@@ -23,7 +23,8 @@ write. Two clients editing a title and an estimate at the same time both keep th
 whole-record write would make the second one win.
 
 Notes are Loro text containers named `note:<taskId>`. The note is not in the task record, so a text
-edit never rewrites the task.
+edit never rewrites the task. Until the editor binds to the container, a save replaces the whole
+note; concurrent edits to one note are the one place v1 does not merge at character level.
 
 ## Records
 

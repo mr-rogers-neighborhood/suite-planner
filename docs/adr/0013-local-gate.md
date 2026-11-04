@@ -6,8 +6,8 @@
 ## Context
 
 A gate that only runs in a hosted CI service is a gate a contributor cannot reproduce. It also makes
-"green" a claim about a service rather than about the code on this machine. Gradient has one
-maintainer and no deployment pipeline yet.
+"green" a claim about a service rather than about the code on this machine. Gradient has no deployment
+pipeline yet.
 
 ## Decision
 
