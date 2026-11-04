@@ -1,4 +1,4 @@
-import type { WorkspaceDocument } from "@gradient/core";
+import type { WorkspaceDocument } from "@suite/planner-core";
 
 export function resolveProjectId(doc: WorkspaceDocument, name: string): string {
   const normalized = name.trim();

@@ -9,9 +9,9 @@ storybook-static/
 *.tsbuildinfo
 
 # Local workspace files and app data
-*.gradient
-*.gradient.tmp
-*.gradient.bak
+*.planner
+*.planner.tmp
+*.planner.bak
 
 # Test and packaging output
 test-results/

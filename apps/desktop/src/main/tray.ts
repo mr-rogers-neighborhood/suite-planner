@@ -9,10 +9,10 @@ export function createTray(showWindow: () => void, quit: () => void): Tray {
   const icon = nativeImage.createFromPath(iconPath).resize({ width: 18, height: 18 });
 
   const tray = new Tray(icon);
-  tray.setToolTip("Gradient");
+  tray.setToolTip("Suite Planner");
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: "Open Gradient", click: showWindow },
+      { label: "Open Suite Planner", click: showWindow },
       { type: "separator" },
       { label: "Quit", click: quit },
     ]),

@@ -9,7 +9,7 @@ import "./theme/styles.css";
 const replica = await bootDocument();
 const container = document.getElementById("root");
 
-if (!container) throw new Error("Gradient: #root is missing");
+if (!container) throw new Error("Suite Planner: #root is missing");
 
 createRoot(container).render(
   <StrictMode>

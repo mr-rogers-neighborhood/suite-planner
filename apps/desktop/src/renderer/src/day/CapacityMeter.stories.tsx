@@ -1,5 +1,5 @@
-import type { Capacity } from "@gradient/core";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Capacity } from "@suite/planner-core";
 
 import { CapacityMeter } from "./CapacityMeter";
 

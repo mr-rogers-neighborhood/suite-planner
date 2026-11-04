@@ -1,4 +1,4 @@
-import type { AppCommand, GradientBridge, ReminderEvent } from "@gradient/core";
+import type { AppCommand, PlannerBridge, ReminderEvent } from "@suite/planner-core";
 import { contextBridge, ipcRenderer } from "electron";
 
 function subscribe<T>(channel: string, listener: (payload: T) => void): () => void {
@@ -9,7 +9,7 @@ function subscribe<T>(channel: string, listener: (payload: T) => void): () => vo
   };
 }
 
-const bridge: GradientBridge = {
+const bridge: PlannerBridge = {
   loadSnapshot: () => ipcRenderer.invoke("workspace:snapshot"),
   commit: (update) => ipcRenderer.invoke("workspace:commit", update),
   onWorkspaceReplaced: (listener) =>
@@ -22,4 +22,4 @@ const bridge: GradientBridge = {
   platform: () => ipcRenderer.invoke("app:platform"),
 };
 
-contextBridge.exposeInMainWorld("gradient", bridge);
+contextBridge.exposeInMainWorld("suitePlanner", bridge);

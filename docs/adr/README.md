@@ -1,7 +1,7 @@
 # Decision records
 
 Every decision that changes the shape of the product or the code gets a short record here. Records
-are written for Gradient; none are copied from another project. An id is stable and quotable, but the
+are written for Suite Planner; none are copied from another project. An id is stable and quotable, but the
 prose around a citation should still state the decision.
 
 | #                                           | Decision                                                      | Status   |

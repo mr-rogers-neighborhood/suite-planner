@@ -1,7 +1,7 @@
-import type { GradientBridge } from "@gradient/core";
+import type { PlannerBridge } from "@suite/planner-core";
 
 declare global {
   interface Window {
-    gradient?: GradientBridge;
+    suitePlanner?: PlannerBridge;
   }
 }

@@ -1,4 +1,4 @@
-import { capacityFor, type Task } from "@gradient/core";
+import { capacityFor, type Task } from "@suite/planner-core";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 

@@ -1,4 +1,4 @@
-import { capacityFor, dayPlan, type Project, type Tag } from "@gradient/core";
+import { capacityFor, dayPlan, type Project, type Tag } from "@suite/planner-core";
 import { Inbox } from "lucide-react";
 
 import { CaptureBar } from "../capture/CaptureBar";

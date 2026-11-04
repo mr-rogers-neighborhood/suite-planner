@@ -1,4 +1,4 @@
-import { formatDuration, inboxTasks, type Project } from "@gradient/core";
+import { formatDuration, inboxTasks, type Project } from "@suite/planner-core";
 import { Inbox } from "lucide-react";
 
 import { CaptureBar } from "../capture/CaptureBar";

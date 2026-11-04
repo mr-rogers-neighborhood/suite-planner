@@ -3,7 +3,7 @@ import { err, ok, type Result } from "neverthrow";
 import type { WorkspaceDocument } from "../loro/WorkspaceDocument";
 import { SCHEMA_VERSION } from "../schema";
 
-export const WORKSPACE_FILE_FORMAT = "gradient.workspace";
+export const WORKSPACE_FILE_FORMAT = "suite.planner";
 export const WORKSPACE_FILE_VERSION = 1;
 
 export type WorkspaceFileEnvelope = {
@@ -51,7 +51,7 @@ export function decodeWorkspaceFile(raw: string): Result<Uint8Array, WorkspaceFi
 
   if (!isEnvelope(parsed)) {
     return err(
-      new WorkspaceFileError("wrong-format", "The file is not a Gradient workspace export"),
+      new WorkspaceFileError("wrong-format", "The file is not a Suite Planner workspace export"),
     );
   }
 

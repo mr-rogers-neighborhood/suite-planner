@@ -12,11 +12,11 @@ describe("parseCapture", () => {
   });
 
   it("should read a day, estimate and project", () => {
-    const parsed = parseCapture("Draft the plan tomorrow ~45m #Gradient", today);
+    const parsed = parseCapture("Draft the plan tomorrow ~45m #Planner", today);
     expect(parsed.title).toBe("Draft the plan");
     expect(parsed.dateKey).toBe("2026-01-06");
     expect(parsed.estimateMinutes).toBe(45);
-    expect(parsed.projectName).toBe("Gradient");
+    expect(parsed.projectName).toBe("Planner");
   });
 
   it("should read hours, tags and priority", () => {
@@ -58,8 +58,8 @@ describe("parseCapture", () => {
   });
 
   it("should use the raw input when every token is metadata", () => {
-    const parsed = parseCapture("#Gradient", today);
-    expect(parsed.title).toBe("#Gradient");
-    expect(parsed.projectName).toBe("Gradient");
+    const parsed = parseCapture("#Planner", today);
+    expect(parsed.title).toBe("#Planner");
+    expect(parsed.projectName).toBe("Planner");
   });
 });

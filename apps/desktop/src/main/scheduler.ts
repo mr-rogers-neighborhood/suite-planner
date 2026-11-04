@@ -1,4 +1,4 @@
-import type { ReminderEvent } from "@gradient/core";
+import type { ReminderEvent } from "@suite/planner-core";
 import { powerMonitor } from "electron";
 
 import type { WorkspaceStore } from "./workspaceStore";

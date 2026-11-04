@@ -5,7 +5,7 @@
 
 ## Context
 
-Gradient is a desktop app from the start. The same UI has to look, focus and read the same on Linux,
+Suite Planner is a desktop app from the start. The same UI has to look, focus and read the same on Linux,
 macOS and Windows, and it needs files, notifications and global shortcuts. Tauri is much smaller, but
 it renders in each OS's webview (WebKitGTK, WebView2, WKWebView), which is where cross-platform
 rendering and accessibility drift comes from. It also adds a Rust toolchain for native work.

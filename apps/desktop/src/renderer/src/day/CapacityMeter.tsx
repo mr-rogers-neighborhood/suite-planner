@@ -1,4 +1,4 @@
-import { type Capacity, formatDuration } from "@gradient/core";
+import { type Capacity, formatDuration } from "@suite/planner-core";
 
 export function capacityLabel(capacity: Capacity): string {
   if (capacity.state === "empty") {

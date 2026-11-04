@@ -19,7 +19,7 @@ export type ImportResult = { canceled: boolean };
  * The only surface the renderer has on the machine. Main implements it; preload exposes it through
  * contextBridge; tests and Storybook use an in-memory implementation.
  */
-export type GradientBridge = {
+export type PlannerBridge = {
   loadSnapshot(): Promise<Uint8Array>;
   commit(update: Uint8Array): Promise<void>;
   onWorkspaceReplaced(listener: (snapshot: Uint8Array) => void): () => void;

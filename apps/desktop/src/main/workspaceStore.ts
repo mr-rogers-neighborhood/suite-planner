@@ -1,6 +1,6 @@
 import { copyFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 
-import { decodeWorkspaceFile, encodeWorkspaceFile, WorkspaceDocument } from "@gradient/core";
+import { decodeWorkspaceFile, encodeWorkspaceFile, WorkspaceDocument } from "@suite/planner-core";
 
 import type { WorkspacePaths } from "./paths";
 
@@ -65,7 +65,7 @@ export class WorkspaceStore {
       .then(() => this.writeCurrent())
       .catch((error: unknown) => {
         // Keep the chain alive: a transient write failure must not stop every later save.
-        console.error("Gradient: could not write the workspace", error);
+        console.error("Suite Planner: could not write the workspace", error);
       });
     return this.#flushing;
   }
@@ -110,13 +110,15 @@ async function loadOrCreate(paths: WorkspacePaths): Promise<WorkspaceDocument> {
       const raw = await readFile(candidate, "utf8");
       const decoded = decodeWorkspaceFile(raw);
       if (decoded.isErr()) {
-        console.warn(`Gradient: ${candidate} is not a valid workspace (${decoded.error.code})`);
+        console.warn(
+          `Suite Planner: ${candidate} is not a valid workspace (${decoded.error.code})`,
+        );
         continue;
       }
       const doc = WorkspaceDocument.fromSnapshot(decoded.value);
       const validation = doc.validate();
       if (validation.isErr()) {
-        console.warn(`Gradient: ${candidate} failed validation`, validation.error);
+        console.warn(`Suite Planner: ${candidate} failed validation`, validation.error);
         continue;
       }
       return doc;

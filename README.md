@@ -1,13 +1,16 @@
-# Gradient
+# Suite Planner
 
 **A local-first daily planner.** A day view that puts your task list beside a calendar, time
 estimates against daily capacity, quick capture, rituals and a focus timer — in one Electron app
 that opens without a network and keeps your plan in a file you own.
 
-There is no account, no server and no telemetry. Export a `.gradient` file whenever you want a copy;
+There is no account, no server and no telemetry. Export a `.planner` file whenever you want a copy;
 the app keeps an autosaved workspace and one rolling backup on this machine.
 
-> Gradient is pre-alpha. The core loop works; editing surfaces and rituals are being built.
+Suite Planner is the planning app in the Suite family, alongside
+[Suite Canvas](https://github.com/mr-rogers-neighborhood/suite-canvas) and a budget app to come.
+
+> Suite Planner is pre-alpha. The core loop works; editing surfaces and rituals are being built.
 
 ## Run it
 
@@ -34,7 +37,7 @@ pnpm package    # electron-builder targets for this platform
 - **A day is the unit.** Today opens to an ordered task list with a capacity meter and a local
   calendar beside it.
 - **Estimates, not guesswork.** Every task carries an estimate; the meter says whether the day fits.
-- **Capture in one line.** `Draft the plan tomorrow ~45m #Gradient @deep-work !1 9:30` becomes a
+- **Capture in one line.** `Draft the plan tomorrow ~45m #Planner @deep-work !1 9:30` becomes a
   scheduled task with a project, tag, estimate, priority and due time.
 - **Inbox, then plan.** Captured work waits in the inbox until you give it a day.
 - **It is a document, not a service.** One Loro CRDT document, autosaved atomically, exportable at
@@ -58,4 +61,4 @@ Read [AGENTS.md](AGENTS.md) before contributing (human or agent), and
 
 ## Licence
 
-MIT, © Gradient contributors.
+MIT, © Suite contributors.

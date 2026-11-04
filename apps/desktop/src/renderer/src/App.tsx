@@ -1,4 +1,4 @@
-import { todayKey } from "@gradient/core";
+import { todayKey } from "@suite/planner-core";
 import { useEffect } from "react";
 import { Shell } from "./app/Shell";
 import { Toast } from "./app/Toast";

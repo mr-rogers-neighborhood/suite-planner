@@ -1,4 +1,4 @@
-import { todayKey } from "@gradient/core";
+import { todayKey } from "@suite/planner-core";
 
 import { Download, Inbox, Sun, Upload } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
@@ -42,7 +42,7 @@ export function Sidebar() {
     <aside className="flex w-[228px] shrink-0 flex-col border-r border-line bg-panel">
       <div className="flex items-center gap-2.5 px-5 pb-5 pt-6">
         <div className="h-6 w-6 rounded-[8px] bg-gradient-to-br from-[#6366f1] to-[#2dd4bf]" />
-        <span className="text-[15px] font-semibold tracking-tight">Gradient</span>
+        <span className="text-[15px] font-semibold tracking-tight">Suite Planner</span>
       </div>
 
       <nav aria-label="Primary" className="flex flex-col gap-1 px-3">

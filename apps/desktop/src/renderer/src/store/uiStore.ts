@@ -1,4 +1,4 @@
-import { type DateKey, todayKey } from "@gradient/core";
+import { type DateKey, todayKey } from "@suite/planner-core";
 import { create } from "zustand";
 
 type View = "today" | "inbox";

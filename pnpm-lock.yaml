@@ -205,15 +205,15 @@ importers:
 
   apps/desktop:
     dependencies:
-      '@gradient/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       '@radix-ui/react-checkbox':
         specifier: ^1.3.3
         version: 1.4.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.1.16
         version: 2.2.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@suite/planner-core':
+        specifier: workspace:*
+        version: link:../../packages/core
       clsx:
         specifier: ^2.1.1
         version: 2.1.1

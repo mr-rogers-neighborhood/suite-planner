@@ -1,4 +1,4 @@
-import type { AppCommand } from "@gradient/core";
+import type { AppCommand } from "@suite/planner-core";
 import { BrowserWindow, Menu, type MenuItemConstructorOptions } from "electron";
 
 function send(command: AppCommand): void {

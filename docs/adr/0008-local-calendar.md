@@ -6,7 +6,7 @@
 ## Context
 
 Sunsama and Akiflow sync Google and Outlook calendars. That needs OAuth, token storage, refresh
-handling and a server component — exactly the account-bound shape Gradient is avoiding. A planner
+handling and a server component — exactly the account-bound shape Suite Planner is avoiding. A planner
 still benefits from seeing meetings next to tasks.
 
 ## Decision

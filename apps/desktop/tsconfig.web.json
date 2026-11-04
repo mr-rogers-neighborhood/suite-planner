@@ -5,7 +5,7 @@
     "jsx": "react-jsx",
     "types": ["vite/client"],
     "paths": {
-      "@gradient/core": ["../../packages/core/src/index.ts"],
+      "@suite/planner-core": ["../../packages/core/src/index.ts"],
       "@renderer/*": ["./src/renderer/src/*"]
     }
   },

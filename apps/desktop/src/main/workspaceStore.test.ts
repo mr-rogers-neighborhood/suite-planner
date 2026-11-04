@@ -2,7 +2,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { WorkspaceDocument } from "@gradient/core";
+import { WorkspaceDocument } from "@suite/planner-core";
 import { afterEach, describe, expect, it } from "vitest";
 
 import type { WorkspacePaths } from "./paths";
@@ -11,13 +11,13 @@ import { WorkspaceStore } from "./workspaceStore";
 const cleanups: string[] = [];
 
 async function paths(): Promise<WorkspacePaths> {
-  const dir = await mkdtemp(join(tmpdir(), "gradient-store-"));
+  const dir = await mkdtemp(join(tmpdir(), "suite-planner-store-"));
   cleanups.push(dir);
   return {
     dir,
-    workspace: join(dir, "workspace.gradient"),
-    backup: join(dir, "workspace.backup.gradient"),
-    temp: join(dir, "workspace.gradient.tmp"),
+    workspace: join(dir, "workspace.planner"),
+    backup: join(dir, "workspace.backup.planner"),
+    temp: join(dir, "workspace.planner.tmp"),
   };
 }
 
@@ -52,7 +52,7 @@ describe("WorkspaceStore", () => {
     const id = commitTask(store, "Exported task");
     await store.flush();
 
-    const file = join(source.dir, "export.gradient");
+    const file = join(source.dir, "export.planner");
     await store.exportTo(file);
 
     const target = await paths();
@@ -83,7 +83,7 @@ describe("WorkspaceStore", () => {
   it("should reject an import that is not a workspace file", async () => {
     const location = await paths();
     const store = await WorkspaceStore.open(location);
-    const file = join(location.dir, "broken.gradient");
+    const file = join(location.dir, "broken.planner");
     await writeFile(file, JSON.stringify({ hello: "world" }), "utf8");
 
     await expect(store.importFrom(file)).rejects.toMatchObject({ code: "wrong-format" });

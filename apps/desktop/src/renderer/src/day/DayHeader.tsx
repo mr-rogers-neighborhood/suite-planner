@@ -1,4 +1,10 @@
-import { addDaysToKey, type DateKey, fromDateKey, humanDayLabel, todayKey } from "@gradient/core";
+import {
+  addDaysToKey,
+  type DateKey,
+  fromDateKey,
+  humanDayLabel,
+  todayKey,
+} from "@suite/planner-core";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";

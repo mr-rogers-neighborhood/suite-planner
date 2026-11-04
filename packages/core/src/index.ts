@@ -47,8 +47,8 @@ export {
 export type {
   AppCommand,
   ExportResult,
-  GradientBridge,
   ImportResult,
+  PlannerBridge,
   ReminderEvent,
   WorkspaceInfo,
 } from "./ports";

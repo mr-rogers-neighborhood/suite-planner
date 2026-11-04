@@ -5,7 +5,7 @@
 
 ## Context
 
-Gradient is account-free and local-first. A relay would add identity, authorization, hosting and
+Suite Planner is account-free and local-first. A relay would add identity, authorization, hosting and
 cost, and none of that is needed to prove the daily-planning loop. But designing the document so sync
 is impossible would be a one-way door.
 

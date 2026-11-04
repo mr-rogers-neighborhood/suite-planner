@@ -81,7 +81,7 @@ Strict mode stays on, including `noUncheckedIndexedAccess`, `exactOptionalProper
 No `any` without a `// biome-ignore lint/suspicious/noExplicitAny: <reason>` and a real reason.
 Prefer `unknown` with narrowing, and discriminated unions.
 
-Type-only imports use `import type`. Imports are grouped external, `@gradient/*`, then relative,
+Type-only imports use `import type`. Imports are grouped external, `@suite/*`, then relative,
 separated by blank lines; Biome's organizer enforces it.
 
 ## Domain language

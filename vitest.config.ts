@@ -11,7 +11,7 @@ export default defineConfig({
     testTimeout: 15_000,
     projects: [
       {
-        resolve: { alias: { "@gradient/core": core } },
+        resolve: { alias: { "@suite/planner-core": core } },
         test: {
           name: "core",
           environment: "node",
@@ -19,7 +19,7 @@ export default defineConfig({
         },
       },
       {
-        resolve: { alias: { "@gradient/core": core } },
+        resolve: { alias: { "@suite/planner-core": core } },
         test: {
           name: "main",
           environment: "node",
@@ -28,7 +28,7 @@ export default defineConfig({
       },
       {
         plugins: [react()],
-        resolve: { alias: { "@gradient/core": core, "@renderer": renderer } },
+        resolve: { alias: { "@suite/planner-core": core, "@renderer": renderer } },
         test: {
           name: "renderer",
           environment: "jsdom",

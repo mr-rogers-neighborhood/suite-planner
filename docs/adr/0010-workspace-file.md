@@ -12,7 +12,7 @@ files gives up CRDT merges and a single ordered plan.
 ## Decision
 
 Keep one autosaved workspace file in Electron's `userData`, with one rolling backup. Export writes the
-same envelope to a user-chosen `.gradient` file; import replaces the workspace after validating every
+same envelope to a user-chosen `.planner` file; import replaces the workspace after validating every
 record.
 
 ## Consequences

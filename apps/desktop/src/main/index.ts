@@ -8,8 +8,10 @@ import { createTray } from "./tray";
 import { applyContentSecurityPolicy, createMainWindow } from "./window";
 import { WorkspaceStore } from "./workspaceStore";
 
-if (process.env.GRADIENT_USER_DATA) {
-  app.setPath("userData", process.env.GRADIENT_USER_DATA);
+app.setName("Suite Planner");
+
+if (process.env.SUITE_PLANNER_USER_DATA) {
+  app.setPath("userData", process.env.SUITE_PLANNER_USER_DATA);
 }
 
 let mainWindow: BrowserWindow | null = null;
@@ -30,7 +32,7 @@ if (!gotLock) {
     .whenReady()
     .then(bootstrap)
     .catch((error: unknown) => {
-      console.error("Gradient failed to start", error);
+      console.error("Suite Planner failed to start", error);
       app.quit();
     });
 
@@ -54,7 +56,7 @@ async function bootstrap(): Promise<void> {
 
   scheduler = new ReminderScheduler(store, (reminder) => {
     if (Notification.isSupported()) {
-      const notification = new Notification({ title: "Gradient", body: reminder.title });
+      const notification = new Notification({ title: "Suite Planner", body: reminder.title });
       notification.on("click", () => showWindow());
       notification.show();
     }
@@ -68,7 +70,7 @@ async function bootstrap(): Promise<void> {
   try {
     tray = createTray(showWindow, () => app.quit());
   } catch (error) {
-    console.warn("Gradient: tray is unavailable, closing the window will quit", error);
+    console.warn("Suite Planner: tray is unavailable, closing the window will quit", error);
   }
 
   app.on("activate", () => showWindow());

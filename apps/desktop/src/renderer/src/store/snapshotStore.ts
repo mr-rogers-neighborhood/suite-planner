@@ -1,4 +1,4 @@
-import { WorkspaceDocument, type WorkspaceSnapshot } from "@gradient/core";
+import { WorkspaceDocument, type WorkspaceSnapshot } from "@suite/planner-core";
 import { createContext, useContext, useSyncExternalStore } from "react";
 
 import { getBridge } from "../platform/bridge";
@@ -53,7 +53,9 @@ export class DocumentReplica {
     return this.#doc.observe((update) => {
       void getBridge()
         .commit(update)
-        .catch((error: unknown) => console.error("Gradient: could not commit an update", error));
+        .catch((error: unknown) =>
+          console.error("Suite Planner: could not commit an update", error),
+        );
       this.refresh();
     });
   }

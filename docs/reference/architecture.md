@@ -1,7 +1,7 @@
 # Architecture
 
-Gradient is a local-first daily planner. One Loro document per workspace is the source of truth,
-`@gradient/core` validates every write, and the React app renders projections of that document. A
+Suite Planner is a local-first daily planner. One Loro document per workspace is the source of truth,
+`@suite/planner-core` validates every write, and the React app renders projections of that document. A
 task exists whether or not it is planned for a day; a day is a date that some tasks point at.
 
 This page is the map. The rules are in [conventions.md](conventions.md), the records in
@@ -11,7 +11,7 @@ This page is the map. The rules are in [conventions.md](conventions.md), the rec
 
 1. **Offline works.** The network is not required to open, edit or export a workspace. There is no
    network call in v1 at all.
-2. **Loro owns the document.** The UI reads through `@gradient/core` and writes through
+2. **Loro owns the document.** The UI reads through `@suite/planner-core` and writes through
    `WorkspaceDocument`, never raw Loro.
 3. **Every write is validated.** Zod schemas in `packages/core/src/schema.ts` parse at the boundary
    before a value reaches the CRDT.
@@ -20,7 +20,7 @@ This page is the map. The rules are in [conventions.md](conventions.md), the rec
 
 ```
 ┌────────────────────────── Electron main (authority) ──────────────────────────┐
-│  WorkspaceDocument (Loro)  ──►  file store (.gradient, atomic write)          │
+│  WorkspaceDocument (Loro)  ──►  file store (.planner, atomic write)          │
 │         │                                                                     │
 │         ├──► reminder scheduler ──► native Notification                      │
 │         └──► IPC: snapshot / commit / export / import / info                  │
@@ -35,8 +35,8 @@ This page is the map. The rules are in [conventions.md](conventions.md), the rec
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Boot.** Main loads `workspace.gradient` from `app.getPath("userData")`, falls back to
-`workspace.backup.gradient`, and creates a new document if both are missing or invalid. The renderer
+**Boot.** Main loads `workspace.planner` from `app.getPath("userData")`, falls back to
+`workspace.backup.planner`, and creates a new document if both are missing or invalid. The renderer
 asks for a snapshot and builds a replica.
 
 **Edits.** The renderer mutates its replica. `subscribeLocalUpdates` emits the CRDT delta; the
@@ -65,13 +65,13 @@ relay needs anyway.
 | Path                          | Responsibility                                                        |
 | ----------------------------- | --------------------------------------------------------------------- |
 | `apps/desktop/src/main`       | Authority, file store, IPC, tray, scheduler, menu, window             |
-| `apps/desktop/src/preload`    | Typed `GradientBridge` over `contextBridge`                           |
+| `apps/desktop/src/preload`    | Typed `PlannerBridge` over `contextBridge`                            |
 | `apps/desktop/src/renderer`   | React shell, day view, inbox, capture, calendar, theme                |
 | `packages/core/src/schema.ts` | Zod records and `z.infer` types                                       |
 | `packages/core/src/loro`      | `WorkspaceDocument` and its domain modules                            |
 | `packages/core/src/plan`      | Pure projections: day plan, capacity, recurrence, inbox, search, sort |
 | `packages/core/src/capture`   | Pure one-line capture parser                                          |
-| `packages/core/src/file`      | `.gradient` envelope, encode/decode, errors                           |
+| `packages/core/src/file`      | `.planner` envelope, encode/decode, errors                            |
 | `scripts/check-shape.mjs`     | Mechanical rules: file length, observe sites, Loro confinement        |
 
 ## Layers

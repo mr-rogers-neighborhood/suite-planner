@@ -5,14 +5,14 @@ import { join } from "node:path";
 import { _electron as electron, expect, test } from "@playwright/test";
 
 test("captures a task and restores it after relaunch", async () => {
-  const userData = await mkdtemp(join(tmpdir(), "gradient-e2e-"));
+  const userData = await mkdtemp(join(tmpdir(), "suite-planner-e2e-"));
 
   const launch = () =>
     electron.launch({
       args: [process.cwd(), "--no-sandbox"],
       env: {
         ...process.env,
-        GRADIENT_USER_DATA: userData,
+        SUITE_PLANNER_USER_DATA: userData,
         ELECTRON_DISABLE_SECURITY_WARNINGS: "1",
       },
     });

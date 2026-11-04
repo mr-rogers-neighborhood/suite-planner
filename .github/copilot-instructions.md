@@ -1,4 +1,4 @@
-# Copilot instructions — Gradient
+# Copilot instructions — Suite Planner
 
 Read [AGENTS.md](../AGENTS.md) for the repo map, rules and feature path, and
 [docs/reference/conventions.md](../docs/reference/conventions.md) for code shape.
@@ -6,11 +6,11 @@ Read [AGENTS.md](../AGENTS.md) for the repo map, rules and feature path, and
 ## Always
 
 - Use pnpm from the repo root; never npm or yarn.
-- Document data goes through `@gradient/core` (`WorkspaceDocument`), never raw Loro.
+- Document data goes through `@suite/planner-core` (`WorkspaceDocument`), never raw Loro.
 - Zustand holds UI state only; document truth is CRDT-owned.
 - Validate every write with Zod, and write only the leaf keys that changed.
 - Keep TypeScript strict; no `any` without a justified `biome-ignore`.
-- The renderer is sandboxed. New machine access goes through `GradientBridge`, validated in main.
+- The renderer is sandboxed. New machine access goes through `PlannerBridge`, validated in main.
 - Conventional commit messages; docs and ADRs change with the code they describe.
 - Run the local gate after each edit batch: `pnpm lint`, `pnpm typecheck`, `pnpm test`,
   `pnpm shape`. E2E runs on request only.

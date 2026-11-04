@@ -1,6 +1,5 @@
-import { type DayTask, formatDuration, type Project, type Tag } from "@gradient/core";
-
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { type DayTask, formatDuration, type Project, type Tag } from "@suite/planner-core";
 import { Bell, MoreHorizontal, Repeat, Timer } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 

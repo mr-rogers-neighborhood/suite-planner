@@ -25,7 +25,7 @@ export function createMainWindow(): BrowserWindow {
     minWidth: 1040,
     minHeight: 680,
     show: false,
-    title: "Gradient",
+    title: "Suite Planner",
     backgroundColor: "#0b0d12",
     autoHideMenuBar: process.platform !== "darwin",
     webPreferences: {

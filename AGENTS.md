@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Gradient is a local-first daily planner: Electron, React 19, one Loro CRDT document per workspace,
+Suite Planner is a local-first daily planner: Electron, React 19, one Loro CRDT document per workspace,
 Zod-validated records, Tailwind v4 with Radix primitives. This file is the entry point for AI agents
 and the short version for humans.
 
@@ -18,14 +18,14 @@ Read [docs/reference/conventions.md](docs/reference/conventions.md) before writi
 
 ## Repo map
 
-| Path                            | Purpose                                                                    |
-| ------------------------------- | -------------------------------------------------------------------------- |
-| `apps/desktop/src/main`         | Document authority, atomic file store, IPC, tray, reminder scheduler       |
-| `apps/desktop/src/preload`      | The allowlisted `contextBridge` surface                                    |
-| `apps/desktop/src/renderer/src` | React app: shell, day view, inbox, capture, calendar                       |
-| `packages/core`                 | Schema, document layer, pure projections, capture parser, `.gradient` file |
-| `docs/reference`                | Architecture, conventions, data model                                      |
-| `docs/adr`                      | Our decision records; ADR ids are stable and quotable                      |
+| Path                            | Purpose                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------- |
+| `apps/desktop/src/main`         | Document authority, atomic file store, IPC, tray, reminder scheduler      |
+| `apps/desktop/src/preload`      | The allowlisted `contextBridge` surface                                   |
+| `apps/desktop/src/renderer/src` | React app: shell, day view, inbox, capture, calendar                      |
+| `packages/core`                 | Schema, document layer, pure projections, capture parser, `.planner` file |
+| `docs/reference`                | Architecture, conventions, data model                                     |
+| `docs/adr`                      | Our decision records; ADR ids are stable and quotable                     |
 
 ## Commands
 
@@ -58,14 +58,14 @@ All verification gates are local. Every gate claim names a local command.
 
 ## Rules
 
-1. Document data goes through `@gradient/core` (`WorkspaceDocument`). Never touch Loro from a
+1. Document data goes through `@suite/planner-core` (`WorkspaceDocument`). Never touch Loro from a
    component, and never import `loro-crdt` outside `packages/core/src/loro`.
 2. Document truth never lives in Zustand, React state or localStorage. Zustand holds UI state only.
 3. Validate every write with the Zod schema. A write sets the leaf keys that changed, never the whole
    record.
 4. TypeScript stays strict. No `any` without a justified `biome-ignore`; prefer `unknown` and
    narrowing.
-5. Renderer talks to the machine only through `GradientBridge`; every IPC payload is validated in
+5. Renderer talks to the machine only through `PlannerBridge`; every IPC payload is validated in
    main.
 6. The renderer is sandboxed: `contextIsolation`, `sandbox`, no `nodeIntegration`, no remote content.
 7. Conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
@@ -96,7 +96,7 @@ Zustand, transient view state in React.
 
 ## Definition of done
 
-Schema and types in `@gradient/core` with unit tests; a component test or story where the change is
+Schema and types in `@suite/planner-core` with unit tests; a component test or story where the change is
 visible; docs updated in the same change; `pnpm verify` green; no new `any`, no raw Loro writes, no
 document state in the UI store.
 
@@ -108,6 +108,6 @@ tools actually ran.
 
 ## Decision records
 
-`docs/adr/` holds our own records, starting at ADR-0001. They are written for Gradient; none are
+`docs/adr/` holds our own records, starting at ADR-0001. They are written for Suite Planner; none are
 copied from another project. A comment may cite `ADR-NNNN`, and the surrounding prose should still
 state the decision so the code does not depend on opening the file.

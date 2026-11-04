@@ -114,11 +114,11 @@ Creating a record writes every field once. Deleting is a map delete; there is no
 
 ## File format
 
-A `.gradient` file is a JSON envelope:
+A `.planner` file is a JSON envelope:
 
 ```json
 {
-  "format": "gradient.workspace",
+  "format": "suite.planner",
   "formatVersion": 1,
   "schemaVersion": 1,
   "exportedAt": "2026-01-05T09:00:00.000Z",
@@ -131,5 +131,5 @@ a snapshot that will not decode. Import then builds a fresh document and validat
 before replacing the authority.
 
 The live workspace is the same envelope at
-`<userData>/workspace.gradient`, with `workspace.backup.gradient` holding the previous write and
-`workspace.gradient.tmp` used for the atomic rename.
+`<userData>/workspace.planner`, with `workspace.backup.planner` holding the previous write and
+`workspace.planner.tmp` used for the atomic rename.

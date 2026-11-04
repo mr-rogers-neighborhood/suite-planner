@@ -5,7 +5,7 @@
 
 ## Context
 
-Gradient must open and edit without a network, keep undo, and survive a crash without losing the
+Suite Planner must open and edit without a network, keep undo, and survive a crash without losing the
 plan. A future sync feature should not force a rewrite of the document layer. The workspace is small
 enough (thousands of tasks, not millions) that one document is comfortable.
 

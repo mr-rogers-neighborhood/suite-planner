@@ -1,4 +1,4 @@
-import { type CalendarEvent, fromDateKey, todayKey } from "@gradient/core";
+import { type CalendarEvent, fromDateKey, todayKey } from "@suite/planner-core";
 import { useEffect, useState } from "react";
 
 import { useWorkspaceSnapshot } from "../store/snapshotStore";
@@ -75,7 +75,7 @@ export function DayCalendar() {
               <div className="absolute inset-x-0 top-24 text-center">
                 <p className="text-xs text-faint">No events today.</p>
                 <p className="mt-1 text-[11px] text-faint/80">
-                  Gradient keeps its calendar on this machine.
+                  Suite Planner keeps its calendar on this machine.
                 </p>
               </div>
             )}

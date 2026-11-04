@@ -9,8 +9,8 @@ const renderer = fileURLToPath(new URL("./src/renderer/src", import.meta.url));
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin({ exclude: ["@gradient/core"] })],
-    resolve: { alias: { "@gradient/core": core } },
+    plugins: [externalizeDepsPlugin({ exclude: ["@suite/planner-core"] })],
+    resolve: { alias: { "@suite/planner-core": core } },
     build: {
       // The wasm-bindgen glue requires a snippet file next to the module; leave it to Node.
       rollupOptions: { external: ["loro-crdt"] },
@@ -21,7 +21,7 @@ export default defineConfig({
   },
   renderer: {
     plugins: [react(), tailwindcss()],
-    resolve: { alias: { "@gradient/core": core, "@renderer": renderer } },
+    resolve: { alias: { "@suite/planner-core": core, "@renderer": renderer } },
     optimizeDeps: {
       // Loro ships a wasm-bindgen entry; pre-bundling it breaks the wasm URL in dev.
       exclude: ["loro-crdt"],

@@ -1,6 +1,6 @@
-appId: app.gradient.desktop
-productName: Gradient
-copyright: Copyright © Gradient contributors
+appId: run.suite.planner
+productName: Suite Planner
+copyright: Copyright © Suite contributors
 
 directories:
   output: release

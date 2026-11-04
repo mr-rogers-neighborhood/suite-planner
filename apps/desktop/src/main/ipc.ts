@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { todayKey } from "@gradient/core";
+import { todayKey } from "@suite/planner-core";
 import { app, BrowserWindow, dialog, ipcMain, type OpenDialogOptions } from "electron";
 import { z } from "zod";
 
@@ -24,8 +24,8 @@ export function registerIpc(store: WorkspaceStore): void {
   ipcMain.handle("workspace:export", async (event) => {
     const options = {
       title: "Export workspace",
-      defaultPath: join(app.getPath("documents"), `gradient-${todayKey()}.gradient`),
-      filters: [{ name: "Gradient workspace", extensions: ["gradient"] }],
+      defaultPath: join(app.getPath("documents"), `planner-${todayKey()}.planner`),
+      filters: [{ name: "Suite Planner workspace", extensions: ["planner"] }],
     };
     const window = BrowserWindow.fromWebContents(event.sender);
     const result = window
@@ -40,7 +40,7 @@ export function registerIpc(store: WorkspaceStore): void {
     const options: OpenDialogOptions = {
       title: "Import workspace",
       properties: ["openFile"],
-      filters: [{ name: "Gradient workspace", extensions: ["gradient"] }],
+      filters: [{ name: "Suite Planner workspace", extensions: ["planner"] }],
     };
     const window = BrowserWindow.fromWebContents(event.sender);
     const result = window

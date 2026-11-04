@@ -1,4 +1,4 @@
-import { type DateKey, parseCapture, todayKey } from "@gradient/core";
+import { type DateKey, parseCapture, todayKey } from "@suite/planner-core";
 
 import { CornerDownLeft, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -88,7 +88,7 @@ export function CaptureBar({ target }: { target: CaptureTarget }) {
           aria-label="Capture a task"
           placeholder={
             target.kind === "day"
-              ? "Add a task for this day — tomorrow ~45m #Gradient"
+              ? "Add a task for this day — tomorrow ~45m #Planner"
               : "Add to the inbox — friday @deep-work !1"
           }
           className="min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-faint focus:outline-none"
