@@ -1,0 +1,30 @@
+appId: app.gradient.desktop
+productName: Gradient
+copyright: Copyright © Gradient contributors
+
+directories:
+  output: release
+  buildResources: resources
+
+files:
+  - out/**
+  - package.json
+
+extraResources:
+  - from: resources
+    to: .
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Office
+
+mac:
+  target:
+    - dmg
+  category: public.app-category.productivity
+
+win:
+  target:
+    - nsis
