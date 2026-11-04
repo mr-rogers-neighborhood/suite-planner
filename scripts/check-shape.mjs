@@ -49,7 +49,8 @@ for (const file of files) {
     problems.push(`${rel}: ${lines} lines (limit ${MAX_LINES}); look for a seam`);
   }
 
-  if (/\bobserve\(/.test(text) && !rel.startsWith(LORO_ALLOWED)) {
+  const isTest = /\.test\.(ts|tsx)$/.test(rel);
+  if (/\bobserve\(/.test(text) && !rel.startsWith(LORO_ALLOWED) && !isTest) {
     observeSites.push(rel);
   }
 

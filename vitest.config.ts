@@ -19,6 +19,14 @@ export default defineConfig({
         },
       },
       {
+        resolve: { alias: { "@gradient/core": core } },
+        test: {
+          name: "main",
+          environment: "node",
+          include: ["apps/desktop/src/main/**/*.test.ts"],
+        },
+      },
+      {
         plugins: [react()],
         resolve: { alias: { "@gradient/core": core, "@renderer": renderer } },
         test: {
