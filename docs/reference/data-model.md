@@ -130,6 +130,7 @@ A `.planner` file is a JSON envelope:
 a snapshot that will not decode. Import then builds a fresh document and validates every record
 before replacing the authority.
 
-The live workspace is the same envelope at
-`<userData>/workspace.planner`, with `workspace.backup.planner` holding the previous write and
-`workspace.planner.tmp` used for the atomic rename.
+The live workspace is the same envelope at `~/Documents/Suite/Planner/workspace.planner`, with
+`workspace.backup.planner` holding the previous write and `workspace.planner.tmp` used for the atomic
+rename. A file the app is asked to open keeps its own name, and its backup and temporary file take that
+name with them.

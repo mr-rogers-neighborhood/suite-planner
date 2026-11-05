@@ -35,8 +35,11 @@ This page is the map. The rules are in [conventions.md](conventions.md), the rec
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Boot.** Main loads `workspace.planner` from `app.getPath("userData")`, falls back to
-`workspace.backup.planner`, and creates a new document if both are missing or invalid. The renderer
+**Boot.** Main loads `workspace.planner` from `~/Documents/Suite/Planner` (the suite's file-location
+convention, overridable with `SUITE_PLANNER_LIBRARY`), falls back to `workspace.backup.planner`, and
+creates a new document if both are missing or invalid. A workspace left in the old application
+directory is copied into the folder once, without deleting the original. A `.planner` path handed over
+by the operating system or by the hub replaces the open workspace. The renderer
 asks for a snapshot and builds a replica.
 
 **Edits.** The renderer mutates its replica. `subscribeLocalUpdates` emits the CRDT delta; the

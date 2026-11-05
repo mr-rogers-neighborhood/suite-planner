@@ -1,20 +1,26 @@
-import { join } from "node:path";
-
+import { suitePaths } from "@suite/contracts";
 import { app } from "electron";
 
-export type WorkspacePaths = {
-  dir: string;
-  workspace: string;
-  backup: string;
-  temp: string;
-};
+import { type WorkspacePaths, workspacePathsFrom } from "./workspaceLocation";
 
-export function workspacePaths(): WorkspacePaths {
-  const dir = app.getPath("userData");
-  return {
-    dir,
-    workspace: join(dir, "workspace.planner"),
-    backup: join(dir, "workspace.backup.planner"),
-    temp: join(dir, "workspace.planner.tmp"),
-  };
+export type { WorkspacePaths };
+
+/**
+ * Where the suite convention puts planner's documents.
+ *
+ * `SUITE_PLANNER_LIBRARY` replaces the folder for a test and a portable install; it is never read
+ * from a document, so no file can steer a write.
+ */
+function workspaceFolder(): string {
+  return suitePaths("Planner", {
+    platform: process.platform,
+    home: app.getPath("home"),
+    documentsOverride: process.env.SUITE_PLANNER_LIBRARY,
+    xdgDataHome: process.env.XDG_DATA_HOME,
+  }).documents;
+}
+
+/** The paths for the default workspace, or for the file a caller names. */
+export function workspacePaths(file?: string | null): WorkspacePaths {
+  return workspacePathsFrom(workspaceFolder(), file);
 }

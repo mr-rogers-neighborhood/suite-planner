@@ -10,7 +10,8 @@
       "!**/storybook-static",
       "!**/.vite",
       "!**/test-results",
-      "!**/playwright-report"
+      "!**/playwright-report",
+      "!**/release"
     ]
   },
   "formatter": {

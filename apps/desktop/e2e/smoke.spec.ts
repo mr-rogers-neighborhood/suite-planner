@@ -13,6 +13,7 @@ test("captures a task and restores it after relaunch", async () => {
       env: {
         ...process.env,
         SUITE_PLANNER_USER_DATA: userData,
+        SUITE_PLANNER_LIBRARY: join(userData, "documents"),
         ELECTRON_DISABLE_SECURITY_WARNINGS: "1",
       },
     });

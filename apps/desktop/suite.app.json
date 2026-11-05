@@ -1,0 +1,11 @@
+{
+  "format": "suite.app",
+  "id": "planner",
+  "name": "Suite Planner",
+  "version": "0.1.0",
+  "contractVersion": "1.0.0",
+  "deepLinkPrefix": "suite://planner/",
+  "fileExtensions": ["planner"],
+  "protocols": ["suite-planner"],
+  "capabilities": ["document.file"]
+}

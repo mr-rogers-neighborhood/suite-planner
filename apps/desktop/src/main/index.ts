@@ -1,4 +1,5 @@
-import { app, type BrowserWindow, Notification, type Tray } from "electron";
+import type { ReminderEvent } from "@suite/planner-core";
+import { app, BrowserWindow, Notification, type Tray } from "electron";
 
 import { registerIpc } from "./ipc";
 import { installMenu } from "./menu";
@@ -6,6 +7,7 @@ import { workspacePaths } from "./paths";
 import { ReminderScheduler } from "./scheduler";
 import { createTray } from "./tray";
 import { applyContentSecurityPolicy, createMainWindow } from "./window";
+import { adoptLegacyWorkspace } from "./workspaceLocation";
 import { WorkspaceStore } from "./workspaceStore";
 
 app.setName("Suite Planner");
@@ -21,16 +23,54 @@ let scheduler: ReminderScheduler | null = null;
 let quitting = false;
 let cleanedUp = false;
 
+/** Files handed over before a window existed. */
+const pendingFiles: string[] = [];
+
+/** The workspace file an argument names, if it names one. */
+function workspaceFromArgv(argv: readonly string[]): string | null {
+  for (const argument of argv.slice(1)) {
+    if (argument.startsWith("-")) continue;
+    if (/\.planner$/iu.test(argument)) return argument;
+  }
+  return null;
+}
+
+function notifyReminder(reminder: ReminderEvent): void {
+  if (Notification.isSupported()) {
+    const notification = new Notification({ title: "Suite Planner", body: reminder.title });
+    notification.on("click", () => showWindow());
+    notification.show();
+  }
+  mainWindow?.webContents.send("reminder:fired", reminder);
+}
+
 const gotLock = app.requestSingleInstanceLock();
 
 if (!gotLock) {
   app.quit();
 } else {
-  app.on("second-instance", () => showWindow());
+  app.on("second-instance", (_event, argv) => {
+    const file = workspaceFromArgv(argv);
+    if (file) {
+      void openWorkspaceFile(file);
+      return;
+    }
+    showWindow();
+  });
+
+  // Delivered before `ready`, so the listener is registered before it.
+  app.on("open-file", (event, path) => {
+    event.preventDefault();
+    if (app.isReady() && store) {
+      void openWorkspaceFile(path);
+      return;
+    }
+    pendingFiles.push(path);
+  });
 
   app
     .whenReady()
-    .then(bootstrap)
+    .then(() => bootstrap(workspaceFromArgv(process.argv)))
     .catch((error: unknown) => {
       console.error("Suite Planner failed to start", error);
       app.quit();
@@ -49,19 +89,20 @@ if (!gotLock) {
   });
 }
 
-async function bootstrap(): Promise<void> {
+async function bootstrap(initialFile: string | null): Promise<void> {
   applyContentSecurityPolicy();
-  store = await WorkspaceStore.open(workspacePaths());
-  registerIpc(store);
+  const paths = workspacePaths(initialFile);
+  const legacyDir = app.getPath("userData");
+  const copied = await adoptLegacyWorkspace(paths, legacyDir);
+  if (copied.length > 0) console.info(`Suite Planner: copied the workspace from ${legacyDir}`);
 
-  scheduler = new ReminderScheduler(store, (reminder) => {
-    if (Notification.isSupported()) {
-      const notification = new Notification({ title: "Suite Planner", body: reminder.title });
-      notification.on("click", () => showWindow());
-      notification.show();
-    }
-    mainWindow?.webContents.send("reminder:fired", reminder);
+  store = await WorkspaceStore.open(paths);
+  registerIpc(() => {
+    if (!store) throw new Error("Suite Planner: no workspace is open");
+    return store;
   });
+
+  scheduler = new ReminderScheduler(store, notifyReminder);
   scheduler.start();
 
   installMenu();
@@ -74,6 +115,35 @@ async function bootstrap(): Promise<void> {
   }
 
   app.on("activate", () => showWindow());
+
+  for (const file of pendingFiles.splice(0)) await openWorkspaceFile(file);
+}
+
+/**
+ * Open a file handed over by the operating system or by the hub.
+ *
+ * The store is replaced rather than merged: a planner window shows one workspace, and pointing it at
+ * another file is the whole request. The previous store is flushed first, so nothing queued is lost.
+ */
+async function openWorkspaceFile(file: string): Promise<void> {
+  if (!store) {
+    pendingFiles.push(file);
+    return;
+  }
+  const previous = store;
+  const next = await WorkspaceStore.open(workspacePaths(file));
+  await previous.close();
+  scheduler?.stop();
+
+  store = next;
+  scheduler = new ReminderScheduler(next, notifyReminder);
+  scheduler.start();
+
+  const snapshot = next.snapshot();
+  for (const window of BrowserWindow.getAllWindows()) {
+    window.webContents.send("workspace:replaced", snapshot);
+  }
+  showWindow();
 }
 
 function openWindow(): BrowserWindow {

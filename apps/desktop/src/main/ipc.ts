@@ -9,16 +9,22 @@ const updateSchema = z.custom<Uint8Array>((value) => value instanceof Uint8Array
   message: "Expected a binary CRDT update",
 });
 
-export function registerIpc(store: WorkspaceStore): void {
-  ipcMain.handle("workspace:snapshot", () => store.snapshot());
+/**
+ * Register the renderer's channels against whatever workspace is open.
+ *
+ * The getter rather than the store itself: a file handed over by the hub replaces the workspace, and
+ * `ipcMain.handle` refuses a second registration for the same channel.
+ */
+export function registerIpc(getStore: () => WorkspaceStore): void {
+  ipcMain.handle("workspace:snapshot", () => getStore().snapshot());
 
   ipcMain.handle("workspace:commit", (_event, payload: unknown) => {
-    store.commit(updateSchema.parse(payload));
+    getStore().commit(updateSchema.parse(payload));
   });
 
   ipcMain.handle("workspace:info", () => ({
-    path: store.path,
-    schemaVersion: store.document.getMeta().schemaVersion,
+    path: getStore().path,
+    schemaVersion: getStore().document.getMeta().schemaVersion,
   }));
 
   ipcMain.handle("workspace:export", async (event) => {
@@ -32,7 +38,7 @@ export function registerIpc(store: WorkspaceStore): void {
       ? await dialog.showSaveDialog(window, options)
       : await dialog.showSaveDialog(options);
     if (result.canceled || !result.filePath) return { canceled: true };
-    await store.exportTo(result.filePath);
+    await getStore().exportTo(result.filePath);
     return { canceled: false, path: result.filePath };
   });
 
@@ -49,8 +55,8 @@ export function registerIpc(store: WorkspaceStore): void {
     const filePath = result.filePaths[0];
     if (result.canceled || !filePath) return { canceled: true };
 
-    await store.importFrom(filePath);
-    const snapshot = store.snapshot();
+    await getStore().importFrom(filePath);
+    const snapshot = getStore().snapshot();
     for (const openWindow of BrowserWindow.getAllWindows()) {
       openWindow.webContents.send("workspace:replaced", snapshot);
     }
