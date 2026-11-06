@@ -1,5 +1,8 @@
 import type { AppCommand } from "@suite/planner-core";
-import { BrowserWindow, Menu, type MenuItemConstructorOptions } from "electron";
+import { BrowserWindow, Menu, type MenuItemConstructorOptions, shell } from "electron";
+
+/** Where "Support Suite…" goes. One line, so it can point at whatever page should take money. */
+const SUPPORT_URL = "https://github.com/mr-rogers-neighborhood/suite-planner";
 
 function send(command: AppCommand): void {
   BrowserWindow.getFocusedWindow()?.webContents.send("ui:command", command);
@@ -43,6 +46,18 @@ export function installMenu(): void {
       ],
     },
     { role: "windowMenu" },
+    {
+      label: "Help",
+      submenu: [
+        {
+          // The one ask in the product: a URL, no account, nothing gated.
+          label: "Support Suite…",
+          click: () => {
+            void shell.openExternal(SUPPORT_URL).catch(() => {});
+          },
+        },
+      ],
+    },
   ];
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
