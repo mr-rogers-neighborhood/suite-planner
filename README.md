@@ -32,6 +32,13 @@ pnpm e2e:smoke  # Playwright smoke journey; on request, not part of the gate
 pnpm package    # electron-builder targets for this platform
 ```
 
+## Working on the whole suite
+
+The hub, the sync server and the three apps are developed together from
+[`suite-dev`](https://github.com/mr-rogers-neighborhood/suite-dev), which assumes the repositories are
+cloned side by side. It stages the real binaries, runs the hub and the sync server together, seeds a
+workspace, and owns the cross-app e2e suite. `pnpm preflight` there says what is missing.
+
 ## What it does
 
 - **A day is the unit.** Today opens to an ordered task list with a capacity meter and a local
