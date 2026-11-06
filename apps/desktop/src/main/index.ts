@@ -10,6 +10,7 @@ import { workspacePaths } from "./paths";
 import { registerAppScheme, serveRenderer } from "./protocol";
 import { ReminderScheduler } from "./scheduler";
 import { createTray } from "./tray";
+import { checkForUpdates } from "./updateCheck";
 import { applyContentSecurityPolicy, createMainWindow, pageCsp } from "./window";
 import { adoptLegacyWorkspace, workspaceFromArgv } from "./workspaceLocation";
 import { WorkspaceStore } from "./workspaceStore";
@@ -114,6 +115,17 @@ async function bootstrap(initialFile: string | null): Promise<void> {
 
   installMenu();
   openWindow();
+
+  // One check per launch, in the background: it writes the report the hub reads.
+  // A dev run has no feed, so it does not ask.
+  void checkForUpdates({
+    dataDir: app.getPath("userData"),
+    version: app.getVersion(),
+    channel: "alpha",
+    packaged: app.isPackaged,
+  }).then(({ error }) => {
+    if (error !== null && app.isPackaged) console.warn(`[update] ${error}`);
+  });
 
   try {
     tray = createTray(showWindow, () => app.quit());

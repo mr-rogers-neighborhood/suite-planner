@@ -6,5 +6,9 @@
   "contractVersion": "1.0.0",
   "deepLinkPrefix": "suite://planner/",
   "fileExtensions": ["planner"],
+  "update": {
+    "feed": "https://github.com/mr-rogers-neighborhood/suite-planner/releases/latest/download",
+    "channel": "alpha"
+  },
   "capabilities": ["document.file"]
 }
