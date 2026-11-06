@@ -4,7 +4,12 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { adoptLegacyWorkspace, workspacePathsFrom } from "./workspaceLocation";
+import {
+  adoptLegacyWorkspace,
+  workspaceFromArgv,
+  workspaceFromLink,
+  workspacePathsFrom,
+} from "./workspaceLocation";
 
 const cleanups: string[] = [];
 
@@ -84,5 +89,64 @@ describe("adoptLegacyWorkspace", () => {
 
     const destination = workspacePathsFrom(legacy);
     expect(await adoptLegacyWorkspace(destination, legacy)).toEqual([]);
+  });
+});
+
+describe("workspaceFromLink", () => {
+  const folder = "/home/me/Documents/Suite/Planner";
+  const present = () => true;
+
+  it("resolves a link to the named workspace in the documents folder", () => {
+    expect(workspaceFromLink("suite://planner/workspace/2026-Q4.planner", folder, present)).toBe(
+      `${folder}/2026-Q4.planner`,
+    );
+  });
+
+  it("refuses a file that is not there", () => {
+    expect(workspaceFromLink("suite://planner/workspace/moved.planner", folder, () => false)).toBe(
+      null,
+    );
+  });
+
+  it("refuses a name that is not a planner workspace", () => {
+    expect(workspaceFromLink("suite://planner/workspace/notes.txt", folder, present)).toBeNull();
+    expect(workspaceFromLink("suite://planner/workspace/a/b.planner", folder, present)).toBeNull();
+  });
+
+  it("refuses a link that names another app", () => {
+    expect(workspaceFromLink("suite://budget/workspace/x.budget", folder, present)).toBeNull();
+  });
+
+  it("refuses a path, which is the other spelling it accepts", () => {
+    expect(workspaceFromLink("/tmp/x.planner", folder, present)).toBeNull();
+  });
+});
+
+describe("workspaceFromArgv", () => {
+  const folder = "/home/me/Documents/Suite/Planner";
+  const present = () => true;
+  const argv = (...args: string[]) => ["/usr/bin/suite-planner", ...args];
+
+  it("reads a path the desktop handed over", () => {
+    expect(workspaceFromArgv(argv("/tmp/x.planner"), folder, present)).toBe("/tmp/x.planner");
+  });
+
+  it("reads a link the hub routed here", () => {
+    expect(workspaceFromArgv(argv("suite://planner/workspace/q4.planner"), folder, present)).toBe(
+      `${folder}/q4.planner`,
+    );
+  });
+
+  it("never treats a link as a path", () => {
+    // A link ends in `.planner` too, so the order of the two tests is the rule.
+    expect(
+      workspaceFromArgv(argv("suite://planner/workspace/gone.planner"), folder, () => false),
+    ).toBe(null);
+  });
+
+  it("ignores flags and finds the file among them", () => {
+    expect(workspaceFromArgv(argv("--no-sandbox", "/tmp/x.planner"), folder, present)).toBe(
+      "/tmp/x.planner",
+    );
   });
 });

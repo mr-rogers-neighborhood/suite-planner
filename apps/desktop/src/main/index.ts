@@ -1,16 +1,23 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
 import type { ReminderEvent } from "@suite/planner-core";
 import { app, BrowserWindow, Notification, type Tray } from "electron";
 
 import { registerIpc } from "./ipc";
 import { installMenu } from "./menu";
 import { workspacePaths } from "./paths";
+import { registerAppScheme, serveRenderer } from "./protocol";
 import { ReminderScheduler } from "./scheduler";
 import { createTray } from "./tray";
-import { applyContentSecurityPolicy, createMainWindow } from "./window";
-import { adoptLegacyWorkspace } from "./workspaceLocation";
+import { applyContentSecurityPolicy, createMainWindow, pageCsp } from "./window";
+import { adoptLegacyWorkspace, workspaceFromArgv } from "./workspaceLocation";
 import { WorkspaceStore } from "./workspaceStore";
 
 app.setName("Suite Planner");
+
+// Before `ready`: a scheme cannot be registered as privileged afterwards.
+registerAppScheme();
 
 if (process.env.SUITE_PLANNER_USER_DATA) {
   app.setPath("userData", process.env.SUITE_PLANNER_USER_DATA);
@@ -26,13 +33,9 @@ let cleanedUp = false;
 /** Files handed over before a window existed. */
 const pendingFiles: string[] = [];
 
-/** The workspace file an argument names, if it names one. */
-function workspaceFromArgv(argv: readonly string[]): string | null {
-  for (const argument of argv.slice(1)) {
-    if (argument.startsWith("-")) continue;
-    if (/\.planner$/iu.test(argument)) return argument;
-  }
-  return null;
+/** The workspace the command line names, whether a path or a link the hub routed here. */
+function workspaceFromCommandLine(argv: readonly string[]): string | null {
+  return workspaceFromArgv(argv, workspacePaths().dir, existsSync);
 }
 
 function notifyReminder(reminder: ReminderEvent): void {
@@ -50,7 +53,7 @@ if (!gotLock) {
   app.quit();
 } else {
   app.on("second-instance", (_event, argv) => {
-    const file = workspaceFromArgv(argv);
+    const file = workspaceFromCommandLine(argv);
     if (file) {
       void openWorkspaceFile(file);
       return;
@@ -70,7 +73,7 @@ if (!gotLock) {
 
   app
     .whenReady()
-    .then(() => bootstrap(workspaceFromArgv(process.argv)))
+    .then(() => bootstrap(workspaceFromCommandLine(process.argv)))
     .catch((error: unknown) => {
       console.error("Suite Planner failed to start", error);
       app.quit();
@@ -90,6 +93,10 @@ if (!gotLock) {
 }
 
 async function bootstrap(initialFile: string | null): Promise<void> {
+  serveRenderer(
+    join(__dirname, "../renderer"),
+    pageCsp(Boolean(process.env.ELECTRON_RENDERER_URL)),
+  );
   applyContentSecurityPolicy();
   const paths = workspacePaths(initialFile);
   const legacyDir = app.getPath("userData");

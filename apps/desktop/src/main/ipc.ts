@@ -1,13 +1,30 @@
 import { join } from "node:path";
+import { isTrustedSender } from "@suite/desktop";
 import { todayKey } from "@suite/planner-core";
+
 import { app, BrowserWindow, dialog, ipcMain, type OpenDialogOptions } from "electron";
 import { z } from "zod";
-
+import { pageOrigins } from "./protocol";
 import type { WorkspaceStore } from "./workspaceStore";
 
 const updateSchema = z.custom<Uint8Array>((value) => value instanceof Uint8Array, {
   message: "Expected a binary CRDT update",
 });
+
+/**
+ * Register a channel, but only answer the page this app loaded.
+ *
+ * Electron's checklist asks every handler to validate the sender.
+ */
+function onIpc(
+  channel: string,
+  handler: (event: Electron.IpcMainInvokeEvent, ...args: unknown[]) => unknown,
+): void {
+  ipcMain.handle(channel, (event, ...args) => {
+    if (!isTrustedSender(event.senderFrame?.url, pageOrigins())) return undefined;
+    return handler(event, ...args);
+  });
+}
 
 /**
  * Register the renderer's channels against whatever workspace is open.
@@ -16,18 +33,18 @@ const updateSchema = z.custom<Uint8Array>((value) => value instanceof Uint8Array
  * `ipcMain.handle` refuses a second registration for the same channel.
  */
 export function registerIpc(getStore: () => WorkspaceStore): void {
-  ipcMain.handle("workspace:snapshot", () => getStore().snapshot());
+  onIpc("workspace:snapshot", () => getStore().snapshot());
 
-  ipcMain.handle("workspace:commit", (_event, payload: unknown) => {
+  onIpc("workspace:commit", (_event, payload: unknown) => {
     getStore().commit(updateSchema.parse(payload));
   });
 
-  ipcMain.handle("workspace:info", () => ({
+  onIpc("workspace:info", () => ({
     path: getStore().path,
     schemaVersion: getStore().document.getMeta().schemaVersion,
   }));
 
-  ipcMain.handle("workspace:export", async (event) => {
+  onIpc("workspace:export", async (event) => {
     const options = {
       title: "Export workspace",
       defaultPath: join(app.getPath("documents"), `planner-${todayKey()}.planner`),
@@ -42,7 +59,7 @@ export function registerIpc(getStore: () => WorkspaceStore): void {
     return { canceled: false, path: result.filePath };
   });
 
-  ipcMain.handle("workspace:import", async (event) => {
+  onIpc("workspace:import", async (event) => {
     const options: OpenDialogOptions = {
       title: "Import workspace",
       properties: ["openFile"],
@@ -63,5 +80,5 @@ export function registerIpc(getStore: () => WorkspaceStore): void {
     return { canceled: false };
   });
 
-  ipcMain.handle("app:platform", () => process.platform);
+  onIpc("app:platform", () => process.platform);
 }

@@ -9,7 +9,7 @@ const renderer = fileURLToPath(new URL("./src/renderer/src", import.meta.url));
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin({ exclude: ["@suite/planner-core"] })],
+    plugins: [externalizeDepsPlugin({ exclude: ["@suite/planner-core", "@suite/desktop"] })],
     resolve: { alias: { "@suite/planner-core": core } },
     build: {
       // The wasm-bindgen glue requires a snippet file next to the module; leave it to Node.

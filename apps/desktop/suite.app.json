@@ -6,6 +6,5 @@
   "contractVersion": "1.0.0",
   "deepLinkPrefix": "suite://planner/",
   "fileExtensions": ["planner"],
-  "protocols": ["suite-planner"],
   "capabilities": ["document.file"]
 }
