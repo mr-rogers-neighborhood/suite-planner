@@ -3,6 +3,9 @@ productName: Suite Planner
 # The binary name is part of what the hub records, so it has to be a name a person would
 # recognise rather than whatever the product name becomes.
 executableName: suite-planner
+# No spaces, for the same reason as every app: a feed names the file it published, and
+# GitHub rewrites a space in an asset name to a dot.
+artifactName: suite-planner-${version}-${arch}.${ext}
 copyright: Copyright © Suite contributors
 
 directories:
