@@ -1,5 +1,5 @@
 import { todayKey } from "@suite/planner-core";
-import { Button } from "@suite/ui";
+import { Button, PrivacyLine } from "@suite/ui";
 import { Download, Inbox, Sun, Upload } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
 import { getBridge } from "../platform/bridge";
@@ -46,6 +46,10 @@ export function Sidebar() {
         <span className="text-[15px] font-semibold tracking-tight">Suite Planner</span>
       </div>
 
+      <div className="px-3 pb-2">
+        <ThemePicker />
+      </div>
+
       <nav aria-label="Primary" className="flex flex-col gap-1 px-3">
         <NavItem
           active={view === "today"}
@@ -85,10 +89,7 @@ export function Sidebar() {
             Import
           </Button>
         </div>
-        <ThemePicker />
-        <p className="truncate text-[11px] text-faint" title={workspacePath}>
-          {workspacePath || "Local workspace"}
-        </p>
+        <PrivacyLine {...(workspacePath ? { where: workspacePath } : {})} />
       </div>
     </aside>
   );
