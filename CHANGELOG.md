@@ -7,6 +7,21 @@ underneath enough to matter.
 
 No changes yet.
 
+## [0.2.2] - 2026-11-08
+
+### Added
+
+- A start screen, shown only on the run that creates the workspace. Planner used to invent a file
+  and drop the person into a blank week with nothing saying where their work would go.
+
+### Fixed
+
+- An installed update now replaces a running Planner. It keeps a tray, so closing the window left
+  the old process alive; the new binary then lost the single-instance lock and the old window came
+  back, which made an update look like a no-op.
+- A host that is not our Electron shell can boot the renderer again: `wasCreated` was a required
+  bridge method, and a container handing over a document has no first run to report.
+
 ## [0.2.1] - 2026-11-07
 
 ### Changed
