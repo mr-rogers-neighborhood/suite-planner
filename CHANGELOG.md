@@ -7,6 +7,21 @@ underneath enough to matter.
 
 No changes yet.
 
+## [0.2.1] - 2026-11-07
+
+### Changed
+
+- The interface wears the Planner glyph now, on the suite's accent tile, instead of a gradient
+  square. The glyph has shipped with the window icon all along; the interface could not use it
+  because it was drawn white and vanished on a light page.
+- **The theme control moved under the app name**, where it is on screen without scrolling. It
+  was in the sidebar footer, which is where nobody looks for a setting that changes everything.
+
+### Fixed
+
+- The privacy claim uses the suite's shared sentence: "Local file. No account, no server, no
+  telemetry."
+
 ## [0.2.0] - 2026-11-07
 
 ### Added
