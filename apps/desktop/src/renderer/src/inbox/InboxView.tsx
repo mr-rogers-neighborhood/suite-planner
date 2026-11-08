@@ -1,8 +1,7 @@
 import { formatDuration, inboxTasks, type Project } from "@suite/planner-core";
+import { Button } from "@suite/ui";
 import { Inbox } from "lucide-react";
-
 import { CaptureBar } from "../capture/CaptureBar";
-import { Button } from "../components/Button";
 import { TaskCheckbox } from "../components/TaskCheckbox";
 import { useReplica, useWorkspaceSnapshot } from "../store/snapshotStore";
 import { useUiStore } from "../store/uiStore";

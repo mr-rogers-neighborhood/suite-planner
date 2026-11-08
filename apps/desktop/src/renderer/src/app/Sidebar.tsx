@@ -1,10 +1,10 @@
 import { todayKey } from "@suite/planner-core";
-
+import { Button } from "@suite/ui";
 import { Download, Inbox, Sun, Upload } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
-import { Button } from "../components/Button";
 import { getBridge } from "../platform/bridge";
 import { useUiStore } from "../store/uiStore";
+import { ThemePicker } from "../theme/ThemePicker";
 
 export function Sidebar() {
   const view = useUiStore((state) => state.view);
@@ -84,6 +84,7 @@ export function Sidebar() {
             Import
           </Button>
         </div>
+        <ThemePicker />
         <p className="truncate text-[11px] text-faint" title={workspacePath}>
           {workspacePath || "Local workspace"}
         </p>

@@ -1,9 +1,8 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { type DayTask, formatDuration, type Project, type Tag } from "@suite/planner-core";
+import { IconButton } from "@suite/ui";
 import { Bell, MoreHorizontal, Repeat, Timer } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-
-import { IconButton } from "../components/IconButton";
 import { TaskCheckbox } from "../components/TaskCheckbox";
 import { useReplica } from "../store/snapshotStore";
 

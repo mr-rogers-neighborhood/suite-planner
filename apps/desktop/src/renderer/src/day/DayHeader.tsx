@@ -5,11 +5,9 @@ import {
   humanDayLabel,
   todayKey,
 } from "@suite/planner-core";
-
+import { IconButton } from "@suite/ui";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-
-import { IconButton } from "../components/IconButton";
 import { useReplica, useWorkspaceSnapshot } from "../store/snapshotStore";
 import { useUiStore } from "../store/uiStore";
 

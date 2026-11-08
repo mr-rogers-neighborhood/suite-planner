@@ -1,50 +1,72 @@
 @import "tailwindcss";
 
+/*
+ * The shared primitives live in `node_modules`, which Tailwind does not scan by default.
+ * Without this line every class in `@suite/ui` compiles to nothing and the components render
+ * unstyled — which looks like a styling bug and is a build-configuration one.
+ */
+@source "../../../../node_modules/@suite/ui/dist";
+
+/*
+ * Tailwind's names, pointed at the theme's roles.
+ *
+ * This is the whole migration. Every component in this app says `bg-panel`, `text-muted`,
+ * `border-line` and so on — 125 places — and none of them changes. What changes is what those
+ * names resolve to: the theme's roles, which a preset overwrites at runtime. Before this, the
+ * same names resolved to twelve hardcoded values that only a rebuild could change.
+ */
 @theme {
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  --color-canvas: var(--surface-canvas);
-  --color-panel: var(--surface-panel);
-  --color-raised: var(--surface-raised);
+  --color-canvas: var(--canvas);
+  --color-panel: var(--surface);
+  --color-raised: var(--surface-sunk);
   --color-ink: var(--ink);
   --color-muted: var(--ink-muted);
   --color-faint: var(--ink-faint);
-  --color-line: var(--line);
+  --color-line: var(--hairline);
   --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
+  /* Derived, not stored: a translucent accent that follows whatever the preset says, rather
+     than a literal that has to be re-tuned per theme. */
+  --color-accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
   --color-danger: var(--danger);
-  --color-warn: var(--warn);
+  --color-warn: var(--warning);
 }
 
+/*
+ * A fallback, not the palette.
+ *
+ * `@suite/theme` sets every role at runtime from the preset and mode a person chose, so what
+ * is here only has to survive the moment before that happens: a renderer that failed early
+ * still has ink and a surface rather than white on white.
+ */
 :root {
   color-scheme: dark;
-  --surface-canvas: #0b0d12;
-  --surface-panel: #10131a;
-  --surface-raised: #171b25;
+  --canvas: #0b0d12;
+  --surface: #10131a;
+  --surface-sunk: #171b25;
   --ink: #e9edf5;
   --ink-muted: #9aa4b6;
   --ink-faint: #6b7488;
-  --line: #232838;
+  --hairline: #232838;
   --accent: #7c8cff;
-  --accent-soft: rgba(124, 140, 255, 0.16);
   --danger: #f2778b;
-  --warn: #e8b465;
+  --warning: #e8b465;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
     color-scheme: light;
-    --surface-canvas: #f6f7fb;
-    --surface-panel: #ffffff;
-    --surface-raised: #f0f2f8;
+    --canvas: #f6f7fb;
+    --surface: #ffffff;
+    --surface-sunk: #f0f2f8;
     --ink: #141824;
     --ink-muted: #5a6376;
     --ink-faint: #8a93a5;
-    --line: #e2e6f0;
+    --hairline: #e2e6f0;
     --accent: #5566e8;
-    --accent-soft: rgba(85, 102, 232, 0.12);
     --danger: #c0394f;
-    --warn: #a86b12;
+    --warning: #a86b12;
   }
 }
 
@@ -56,7 +78,7 @@ body,
 
 body {
   margin: 0;
-  background: var(--surface-canvas);
+  background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -64,11 +86,11 @@ body {
 }
 
 ::selection {
-  background: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
 *:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus, var(--accent));
   outline-offset: 2px;
 }
 

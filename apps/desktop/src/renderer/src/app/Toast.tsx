@@ -1,29 +1,23 @@
-import { X } from "lucide-react";
-import { useEffect } from "react";
-import { IconButton } from "../components/IconButton";
+import { Toast as SharedToast } from "@suite/ui";
+
 import { useUiStore } from "../store/uiStore";
 
+/**
+ * The app's toast, on the shared one.
+ *
+ * The store holds a bare string; the shared component wants a notice object, because it has a
+ * tone that decides whether a screen reader interrupts. A failure is the only thing that
+ * should interrupt, and this app's notices are all informational — so the adapter is a
+ * wrapping, not a tone. A failure path can pass one later without changing the store.
+ */
 export function Toast() {
   const notice = useUiStore((state) => state.notice);
   const setNotice = useUiStore((state) => state.setNotice);
 
-  useEffect(() => {
-    if (!notice) return;
-    const timer = setTimeout(() => setNotice(null), 4500);
-    return () => clearTimeout(timer);
-  }, [notice, setNotice]);
-
-  if (!notice) return null;
-
   return (
-    <div
-      role="status"
-      className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-xl border border-line bg-panel px-4 py-2.5 text-sm text-ink shadow-2xl"
-    >
-      <span className="max-w-[52ch] truncate">{notice}</span>
-      <IconButton label="Dismiss" onClick={() => setNotice(null)} className="h-6 w-6">
-        <X size={14} />
-      </IconButton>
-    </div>
+    <SharedToast
+      notice={notice === null ? null : { message: notice }}
+      onDismiss={() => setNotice(null)}
+    />
   );
 }
