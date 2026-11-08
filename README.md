@@ -82,6 +82,8 @@ workspace, and owns the cross-app e2e suite. `pnpm preflight` there says what is
 - **It is a document, not a service.** One Loro CRDT document, autosaved atomically, exportable at
   any time.
 
+What changed, in a person's words rather than commits: [CHANGELOG.md](CHANGELOG.md).
+
 ## How it is built
 
 React 19 on Electron, one Loro CRDT document per workspace, Zod-validated records, Tailwind v4 with
