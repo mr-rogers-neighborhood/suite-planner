@@ -5,6 +5,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import { getBridge } from "../platform/bridge";
 import { useUiStore } from "../store/uiStore";
 import { ThemePicker } from "../theme/ThemePicker";
+import { PlannerMark } from "./PlannerMark";
 
 export function Sidebar() {
   const view = useUiStore((state) => state.view);
@@ -41,7 +42,7 @@ export function Sidebar() {
   return (
     <aside className="flex w-[228px] shrink-0 flex-col border-r border-line bg-panel">
       <div className="flex items-center gap-2.5 px-5 pb-5 pt-6">
-        <div className="h-6 w-6 rounded-[8px] bg-gradient-to-br from-[#6366f1] to-[#2dd4bf]" />
+        <PlannerMark size="sm" />
         <span className="text-[15px] font-semibold tracking-tight">Suite Planner</span>
       </div>
 
