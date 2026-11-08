@@ -21,6 +21,8 @@ export type ImportResult = { canceled: boolean };
  */
 export type PlannerBridge = {
   loadSnapshot(): Promise<Uint8Array>;
+  /** Whether this session started with no workspace file, which is when a start screen is due. */
+  wasCreated(): Promise<boolean>;
   commit(update: Uint8Array): Promise<void>;
   onWorkspaceReplaced(listener: (snapshot: Uint8Array) => void): () => void;
   onReminder(listener: (reminder: ReminderEvent) => void): () => void;

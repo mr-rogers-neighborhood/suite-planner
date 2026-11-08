@@ -11,17 +11,32 @@ import type { WorkspacePaths } from "./paths";
 export class WorkspaceStore {
   #doc: WorkspaceDocument;
   readonly #paths: WorkspacePaths;
+  /**
+   * True when this session started from nothing.
+   *
+   * The first-run case is the only one where a person has not yet said which workspace they
+   * are in, so it is the only one that gets a start screen. Any other run means a file was
+   * already there and they expect to land in it.
+   */
+  readonly #created: boolean;
   #saveTimer: NodeJS.Timeout | null = null;
   #flushing: Promise<void> = Promise.resolve();
 
-  private constructor(doc: WorkspaceDocument, paths: WorkspacePaths) {
+  private constructor(doc: WorkspaceDocument, paths: WorkspacePaths, created: boolean) {
     this.#doc = doc;
     this.#paths = paths;
+    this.#created = created;
   }
 
   static async open(paths: WorkspacePaths): Promise<WorkspaceStore> {
     await mkdir(paths.dir, { recursive: true });
-    return new WorkspaceStore(await loadOrCreate(paths), paths);
+    const { doc, created } = await loadOrCreate(paths);
+    return new WorkspaceStore(doc, paths, created);
+  }
+
+  /** Whether this session began with no workspace file at all. */
+  get created(): boolean {
+    return this.#created;
   }
 
   get document(): WorkspaceDocument {
@@ -104,7 +119,9 @@ export class WorkspaceStore {
   }
 }
 
-async function loadOrCreate(paths: WorkspacePaths): Promise<WorkspaceDocument> {
+async function loadOrCreate(
+  paths: WorkspacePaths,
+): Promise<{ doc: WorkspaceDocument; created: boolean }> {
   for (const candidate of [paths.workspace, paths.backup]) {
     try {
       const raw = await readFile(candidate, "utf8");
@@ -121,10 +138,10 @@ async function loadOrCreate(paths: WorkspacePaths): Promise<WorkspaceDocument> {
         console.warn(`Suite Planner: ${candidate} failed validation`, validation.error);
         continue;
       }
-      return doc;
+      return { doc, created: false };
     } catch {
       // The file does not exist yet; try the backup, then start a new workspace.
     }
   }
-  return WorkspaceDocument.create();
+  return { doc: WorkspaceDocument.create(), created: true };
 }

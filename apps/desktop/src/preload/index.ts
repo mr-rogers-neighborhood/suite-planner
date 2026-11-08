@@ -11,6 +11,7 @@ function subscribe<T>(channel: string, listener: (payload: T) => void): () => vo
 
 const bridge: PlannerBridge = {
   loadSnapshot: () => ipcRenderer.invoke("workspace:snapshot"),
+  wasCreated: (): Promise<boolean> => ipcRenderer.invoke("workspace:created"),
   commit: (update) => ipcRenderer.invoke("workspace:commit", update),
   onWorkspaceReplaced: (listener) =>
     subscribe<Uint8Array>("workspace:replaced", (snapshot) => listener(snapshot)),

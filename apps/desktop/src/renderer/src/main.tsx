@@ -11,13 +11,13 @@ import { initTheme } from "./theme/theme";
 // the theme it was left in rather than flashing the fallback.
 initTheme();
 
-const replica = await bootDocument();
+const { replica, created } = await bootDocument();
 const container = document.getElementById("root");
 
 if (!container) throw new Error("Suite Planner: #root is missing");
 
 createRoot(container).render(
   <StrictMode>
-    <App replica={replica} />
+    <App replica={replica} created={created} />
   </StrictMode>,
 );

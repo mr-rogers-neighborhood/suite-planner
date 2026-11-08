@@ -39,6 +39,8 @@ export function registerIpc(getStore: () => WorkspaceStore): void {
     getStore().commit(updateSchema.parse(payload));
   });
 
+  onIpc("workspace:created", () => getStore().created);
+
   onIpc("workspace:info", () => ({
     path: getStore().path,
     schemaVersion: getStore().document.getMeta().schemaVersion,

@@ -1,16 +1,19 @@
 import { todayKey } from "@suite/planner-core";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Shell } from "./app/Shell";
 import { Toast } from "./app/Toast";
+import { PlannerLauncher } from "./launcher/PlannerLauncher";
 import { getBridge } from "./platform/bridge";
 import { type DocumentReplica, WorkspaceContext } from "./store/snapshotStore";
 import { useUiStore } from "./store/uiStore";
 
-export function App({ replica }: { replica: DocumentReplica }) {
+export function App({ replica, created }: { replica: DocumentReplica; created: boolean }) {
   const setNotice = useUiStore((state) => state.setNotice);
   const focusCapture = useUiStore((state) => state.focusCapture);
   const setView = useUiStore((state) => state.setView);
   const setSelectedDate = useUiStore((state) => state.setSelectedDate);
+  // Only the run that invented the workspace starts here; dismissing is for this session only.
+  const [begun, setBegun] = useState(!created);
 
   useEffect(() => {
     const bridge = getBridge();
@@ -34,7 +37,7 @@ export function App({ replica }: { replica: DocumentReplica }) {
 
   return (
     <WorkspaceContext.Provider value={replica}>
-      <Shell />
+      {begun ? <Shell /> : <PlannerLauncher onBegin={() => setBegun(true)} />}
       <Toast />
     </WorkspaceContext.Provider>
   );

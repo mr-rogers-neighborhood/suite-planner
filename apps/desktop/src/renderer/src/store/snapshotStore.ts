@@ -63,12 +63,15 @@ export class DocumentReplica {
 
 export const WorkspaceContext = createContext<DocumentReplica | null>(null);
 
-export async function bootDocument(): Promise<DocumentReplica> {
+export async function bootDocument(): Promise<{
+  replica: DocumentReplica;
+  created: boolean;
+}> {
   const bridge = getBridge();
   const bytes = await bridge.loadSnapshot();
   const replica = new DocumentReplica(WorkspaceDocument.fromSnapshot(bytes));
   bridge.onWorkspaceReplaced((snapshot) => replica.replace(snapshot));
-  return replica;
+  return { replica, created: await bridge.wasCreated() };
 }
 
 export function useReplica(): DocumentReplica {
