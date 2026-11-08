@@ -71,7 +71,8 @@ export async function bootDocument(): Promise<{
   const bytes = await bridge.loadSnapshot();
   const replica = new DocumentReplica(WorkspaceDocument.fromSnapshot(bytes));
   bridge.onWorkspaceReplaced((snapshot) => replica.replace(snapshot));
-  return { replica, created: await bridge.wasCreated() };
+  // A host without the method is a host that handed us a document, so nothing was invented.
+  return { replica, created: (await bridge.wasCreated?.()) ?? false };
 }
 
 export function useReplica(): DocumentReplica {

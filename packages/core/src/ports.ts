@@ -21,8 +21,15 @@ export type ImportResult = { canceled: boolean };
  */
 export type PlannerBridge = {
   loadSnapshot(): Promise<Uint8Array>;
-  /** Whether this session started with no workspace file, which is when a start screen is due. */
-  wasCreated(): Promise<boolean>;
+  /**
+   * Whether this session started with no workspace file, which is when a start screen is due.
+   *
+   * Optional on purpose. A host that hands a document over, rather than letting the app read or
+   * invent one, has no such distinction to report, and it must not be forced to invent an answer
+   * to boot the renderer. Absent reads as `false`, which sends the person straight to the
+   * document, which is the right outcome for a container.
+   */
+  wasCreated?(): Promise<boolean>;
   commit(update: Uint8Array): Promise<void>;
   onWorkspaceReplaced(listener: (snapshot: Uint8Array) => void): () => void;
   onReminder(listener: (reminder: ReminderEvent) => void): () => void;
