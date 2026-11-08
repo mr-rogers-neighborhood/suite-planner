@@ -7,6 +7,23 @@ underneath enough to matter.
 
 No changes yet.
 
+## [0.2.0] - 2026-11-07
+
+### Added
+
+- **Three colour themes, each in light and dark.** Suite, Solarized in its two official variants,
+  and Warm. The sidebar offers a Theme list and a Brightness toggle, and the choice is remembered.
+  This is the first release where the app can be something other than dark.
+
+### Changed
+
+- The interface draws from the suite's shared palette, so a preset repaints every control. Money
+  colours, the accent and the danger state all come from one place.
+
+### Fixed
+
+- A primary button's label was hardcoded white, which is unreadable on some presets.
+
 ## [0.1.2] - 2026-11-07
 
 ### Fixed

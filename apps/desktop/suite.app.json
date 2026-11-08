@@ -2,7 +2,7 @@
   "format": "suite.app",
   "id": "planner",
   "name": "Suite Planner",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "contractVersion": "1.0.0",
   "deepLinkPrefix": "suite://planner/",
   "fileExtensions": ["planner"],
