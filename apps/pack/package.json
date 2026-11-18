@@ -1,0 +1,23 @@
+{
+  "name": "@suite/planner-pack",
+  "private": true,
+  "type": "module",
+  "description": "Planner as an isolated Suite Go pack: a bridge prelude around Planner's own renderer.",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@suite/go": "link:../../../suite-go/packages/go",
+    "@suite/planner-core": "workspace:*",
+    "loro-crdt": "^1.17.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "~5.9.3",
+    "vite": "^8.3.4",
+    "vite-plugin-wasm": "^3.6.0",
+    "vitest": "^5.0.5"
+  }
+}

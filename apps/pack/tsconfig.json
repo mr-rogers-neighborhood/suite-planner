@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": [],
+    "paths": {
+      "@suite/planner-core": ["../../packages/core/src/index.ts"],
+      "@renderer/*": ["../desktop/src/renderer/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "vite.config.ts"]
+}

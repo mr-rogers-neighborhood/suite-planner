@@ -36,6 +36,16 @@ export default defineConfig({
           setupFiles: ["apps/desktop/src/renderer/src/test/setup.ts"],
         },
       },
+      {
+        // The pack's bridge adapter. Node, because it is about persistence and ownership, not DOM:
+        // a jsdom document here would only make the boundary harder to see.
+        resolve: { alias: { "@suite/planner-core": core } },
+        test: {
+          name: "pack",
+          environment: "node",
+          include: ["apps/pack/src/**/*.test.ts"],
+        },
+      },
     ],
   },
 });

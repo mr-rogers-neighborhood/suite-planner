@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      A pack that does not declare `network` has to prove it cannot reach one; `checkNetworkPolicy`
+      refuses the install otherwise. `default-src 'self'` matters as much as `connect-src`: the
+      other fetch directives inherit from it, so without it an `<img src="https://…">` would be an
+      exfiltration channel that connect-src does not close. `connect-src 'self'` rather than
+      'none' because wasm-bindgen fetches Loro's `.wasm` same-origin — measured: 'none' blanks the
+      frame. 'self' still cannot reach a remote origin.
+      `wasm-unsafe-eval` is Loro; the inline allowances are Vite's module preload and Tailwind.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; worker-src 'none'; form-action 'none'; base-uri 'none'"
+    />
+    <title>Suite Planner</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!--
+      The bridge prelude, not the app: it installs `window.suitePlanner` before the renderer's own
+      entry is imported, because `bootDocument()` reads that global at import time.
+    -->
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
