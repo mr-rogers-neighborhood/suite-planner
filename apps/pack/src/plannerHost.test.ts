@@ -52,24 +52,24 @@ function fakeHost(seed: ReadonlyMap<string, Uint8Array> = new Map()): FakeHost {
         const bytes = files.get(id);
         return bytes === undefined ? null : { ...summaryOf(id), bytes };
       },
-      async save(id, input) {
+      async save(id: string, input: { readonly bytes: Uint8Array; readonly title?: string }) {
         writes += 1;
         files.set(id, input.bytes);
         if (input.title !== undefined) titles.set(id, input.title);
         return summaryOf(id);
       },
-      async remove(id) {
+      async remove(id: string) {
         files.delete(id);
       },
     },
     storage: {
-      async get(key) {
+      async get(key: string) {
         return kv.get(key) ?? null;
       },
-      async set(key, value) {
+      async set(key: string, value: string) {
         kv.set(key, value);
       },
-      async delete(key) {
+      async delete(key: string) {
         kv.delete(key);
       },
       async keys() {
@@ -112,7 +112,7 @@ describe("the pack's Planner bridge", () => {
     await bridge.loadSnapshot();
 
     const app = WorkspaceDocument.create({ now: new Date(0) });
-    await bridge.adopt(app.snapshot());
+    await bridge.adopt?.(app.snapshot());
 
     expect(host.writes).toBe(1);
     const [stored] = [...host.saved.values()];
@@ -126,7 +126,7 @@ describe("the pack's Planner bridge", () => {
     const host = fakeHost();
     const first = createPlannerHost(host);
     await first.loadSnapshot();
-    await first.adopt(WorkspaceDocument.create({ now: new Date(0) }).snapshot());
+    await first.adopt?.(WorkspaceDocument.create({ now: new Date(0) }).snapshot());
 
     const second = createPlannerHost(host);
     const bytes = await second.loadSnapshot();
@@ -139,7 +139,7 @@ describe("the pack's Planner bridge", () => {
     const bridge = createPlannerHost(host);
     await bridge.loadSnapshot();
     const app = WorkspaceDocument.create({ now: new Date(0) });
-    await bridge.adopt(app.snapshot());
+    await bridge.adopt?.(app.snapshot());
     const afterAdopt = host.writes;
 
     // Two edits arrive as updates, as the renderer's subscription sends them. The escape hatch is
