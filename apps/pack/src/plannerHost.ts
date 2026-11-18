@@ -1,6 +1,11 @@
 import type { ModuleHost } from "@suite/go";
-import type { ExportResult, ImportResult, PlannerBridge, WorkspaceInfo } from "@suite/planner-core";
-import { LoroDoc } from "loro-crdt";
+import {
+  type ExportResult,
+  type ImportResult,
+  type PlannerBridge,
+  WorkspaceDocument,
+  type WorkspaceInfo,
+} from "@suite/planner-core";
 
 /**
  * Planner's bridge, built out of whatever host it is running in.
@@ -9,13 +14,19 @@ import { LoroDoc } from "loro-crdt";
  * purpose: `suite-go` installs a signed pack and learns nothing, which is the rule the container
  * exists to keep (`suite-go/docs/reference/contract.md`).
  *
- * The awkward part is ownership. On the desktop, main holds a `LoroDoc`, applies the renderer's
- * updates and writes the file. A pack has no main, so this object is that owner: it holds a replica,
- * applies each update, and writes a snapshot at the boundaries ADR-0005 names — never per keystroke,
- * and never an update written out as if it were a whole document.
+ * The awkward part is ownership. On the desktop, main holds the document, applies the renderer's
+ * updates and writes the file. A pack has no main, so this object is that owner: it holds a
+ * `WorkspaceDocument`, applies each update, and writes a snapshot at the boundaries ADR-0005 names —
+ * never per keystroke, and never an update written out as if it were a whole document.
+ *
+ * It goes through `WorkspaceDocument` rather than `loro-crdt` on purpose: this repository keeps
+ * every touch of Loro inside `packages/core/src/loro`, and `scripts/check-shape.mjs` fails the gate
+ * if something else imports it. The wrapper is not a restriction here — the schema-initialising
+ * `create()`, the peer-id handling in `fromSnapshot`, and the commit-before-export in `snapshot()`
+ * are all things a pack would otherwise have to re-derive and get wrong.
  */
 
-export const DOCUMENT_STORAGE_KEY = "planner:document-id";
+const DOCUMENT_STORAGE_KEY = "planner:document-id";
 const DOCUMENT_NAME = "Planner.planner";
 const DOCUMENT_TITLE = "Planner";
 
@@ -31,7 +42,7 @@ export interface PlannerHost extends PlannerBridge {
 
 export function createPlannerHost(host: ModuleHost): PlannerHost {
   let documentId: string | null = null;
-  let doc: LoroDoc | null = null;
+  let doc: WorkspaceDocument | null = null;
   let created = false;
   let dirty = false;
   let timer: ReturnType<typeof setTimeout> | null = null;
@@ -48,7 +59,7 @@ export function createPlannerHost(host: ModuleHost): PlannerHost {
     dirty = false;
     try {
       await host.documents.save(documentId, {
-        bytes: doc.export({ mode: "snapshot" }),
+        bytes: doc.snapshot(),
         title: DOCUMENT_TITLE,
       });
     } catch (error) {
@@ -76,10 +87,10 @@ export function createPlannerHost(host: ModuleHost): PlannerHost {
    * trusted the first document in a list without checking opened a foreign file in practice — the
    * frame bridge used to ignore the module filter, and the failure surfaced as a Loro decode error.
    */
-  function replicaOf(bytes: Uint8Array): LoroDoc | null {
-    if (bytes.length === 0) return new LoroDoc();
+  function replicaOf(bytes: Uint8Array): WorkspaceDocument | null {
+    if (bytes.length === 0) return WorkspaceDocument.create();
     try {
-      return LoroDoc.fromSnapshot(bytes);
+      return WorkspaceDocument.fromSnapshot(bytes);
     } catch {
       return null;
     }
@@ -115,7 +126,7 @@ export function createPlannerHost(host: ModuleHost): PlannerHost {
 
     const record = await host.documents.create({ moduleId: host.moduleId, name: DOCUMENT_NAME });
     documentId = record.id;
-    doc = new LoroDoc();
+    doc = WorkspaceDocument.create();
     created = true;
     await host.storage.set(DOCUMENT_STORAGE_KEY, record.id);
   }
@@ -140,7 +151,7 @@ export function createPlannerHost(host: ModuleHost): PlannerHost {
       if (created || doc === null) return null;
       // A snapshot, not an update: the app's `fromSnapshot` needs the schema, and updates after
       // creation do not carry it.
-      return doc.export({ mode: "snapshot" });
+      return doc.snapshot();
     },
 
     async adopt(snapshot: Uint8Array) {
@@ -148,14 +159,14 @@ export function createPlannerHost(host: ModuleHost): PlannerHost {
       if (doc === null) return;
       // The app made the first document. Import rather than replace, so anything already applied
       // to this replica survives.
-      doc.import(snapshot);
+      doc.applyUpdate(snapshot);
       dirty = true;
       await flush();
     },
 
     async commit(update: Uint8Array) {
       await ensure();
-      doc?.import(update);
+      doc?.applyUpdate(update);
       dirty = true;
       schedule();
     },
@@ -188,7 +199,7 @@ export function createPlannerHost(host: ModuleHost): PlannerHost {
 
     async info(): Promise<WorkspaceInfo> {
       await ensure();
-      const schemaVersion = Number(doc?.getMap("meta").get("schemaVersion") ?? 0);
+      const schemaVersion = doc?.getSnapshot().meta.schemaVersion ?? 0;
       return { path: DOCUMENT_NAME, schemaVersion };
     },
 

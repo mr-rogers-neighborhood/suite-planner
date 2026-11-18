@@ -302,9 +302,6 @@ importers:
       '@suite/planner-core':
         specifier: workspace:*
         version: link:../../packages/core
-      loro-crdt:
-        specifier: ^1.17.1
-        version: 1.17.1
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.3.3

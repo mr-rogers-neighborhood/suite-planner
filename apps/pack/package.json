@@ -9,8 +9,7 @@
   },
   "dependencies": {
     "@suite/go": "link:../../../suite-go/packages/go",
-    "@suite/planner-core": "workspace:*",
-    "loro-crdt": "^1.17.1"
+    "@suite/planner-core": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
