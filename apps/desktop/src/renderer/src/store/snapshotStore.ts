@@ -69,7 +69,12 @@ export async function bootDocument(): Promise<{
 }> {
   const bridge = getBridge();
   const bytes = await bridge.loadSnapshot();
-  const replica = new DocumentReplica(WorkspaceDocument.fromSnapshot(bytes));
+  const replica = new DocumentReplica(
+    bytes === null ? WorkspaceDocument.create() : WorkspaceDocument.fromSnapshot(bytes),
+  );
+  // A host that had nothing gets the document the app just made. Everything after this arrives as
+  // an update, and updates alone do not carry the schema the app wrote before subscribing.
+  if (bytes === null) await bridge.adopt?.(replica.document.snapshot());
   bridge.onWorkspaceReplaced((snapshot) => replica.replace(snapshot));
   // A host without the method is a host that handed us a document, so nothing was invented.
   return { replica, created: (await bridge.wasCreated?.()) ?? false };

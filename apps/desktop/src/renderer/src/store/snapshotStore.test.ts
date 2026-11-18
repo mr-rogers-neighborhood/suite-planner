@@ -48,4 +48,47 @@ describe("bootDocument", () => {
     expect(created).toBe(false);
     expect(replica.getSnapshot()).toBeDefined();
   });
+
+  it("makes its own document when the host has none to hand over", async () => {
+    // `fromSnapshot` needs a schema-initialised snapshot, which a container cannot manufacture.
+    // So `null` means the app creates the document — not that booting failed.
+    bridge.current = stubBridge({ loadSnapshot: async () => null });
+    const { replica } = await bootDocument();
+    expect(replica.getSnapshot()).toBeDefined();
+    expect(replica.getSnapshot().days).toBeDefined();
+  });
+
+  it("hands the document it made back to a host that had none", async () => {
+    // The host cannot make a schema, and `commit(update)` only carries what happens *after*
+    // creation. So the first document travels once, and it has to be a real snapshot.
+    const adopted: Uint8Array[] = [];
+    bridge.current = stubBridge({
+      loadSnapshot: async () => null,
+      adopt: async (snapshot: Uint8Array) => {
+        adopted.push(snapshot);
+      },
+    });
+
+    await bootDocument();
+
+    expect(adopted).toHaveLength(1);
+    const snapshot = adopted[0] as Uint8Array;
+    expect(snapshot.byteLength).toBeGreaterThan(0);
+    // It has to be something the app itself can reopen, or the second launch throws.
+    const reopened = WorkspaceDocument.fromSnapshot(snapshot);
+    expect(reopened.getSnapshot().meta).toBeDefined();
+  });
+
+  it("does not adopt when the host already had a document", async () => {
+    const adopted: Uint8Array[] = [];
+    bridge.current = stubBridge({
+      adopt: async (snapshot: Uint8Array) => {
+        adopted.push(snapshot);
+      },
+    });
+
+    await bootDocument();
+
+    expect(adopted).toEqual([]);
+  });
 });

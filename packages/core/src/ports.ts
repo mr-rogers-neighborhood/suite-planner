@@ -20,7 +20,30 @@ export type ImportResult = { canceled: boolean };
  * contextBridge; tests and Storybook use an in-memory implementation.
  */
 export type PlannerBridge = {
-  loadSnapshot(): Promise<Uint8Array>;
+  /**
+   * The document to open, or `null` when there is not one yet.
+   *
+   * `null` is not an error and not a shrug: it is the host saying "nothing is here", which is the
+   * one answer a container can honestly give. `fromSnapshot` needs a schema-initialised snapshot,
+   * and a container that hosts Planner has no way to produce one that stays valid as the schema
+   * moves — so inventing the document belongs to the app, not the host.
+   *
+   * A host that always has bytes (the desktop shell always opens a file) never returns it.
+   */
+  loadSnapshot(): Promise<Uint8Array | null>;
+  /**
+   * Take the document the app just made, once, on a first run.
+   *
+   * A host that answered `null` has no document and cannot make one — manufacturing a
+   * schema-initialised snapshot would be the host knowing a domain. So the app hands its first
+   * document back, before the person can edit it, and the host keeps it as the file.
+   *
+   * This is not a convenience. A host that only ever receives `commit(update)` gets the deltas that
+   * come *after* creation, and a document rebuilt from those is missing its schema: the emitted
+   * update after `WorkspaceDocument.create()` carries no meta at all. Optional, because a host that
+   * always had a document from a file has nothing to adopt.
+   */
+  adopt?(snapshot: Uint8Array): Promise<void>;
   /**
    * Whether this session started with no workspace file, which is when a start screen is due.
    *
